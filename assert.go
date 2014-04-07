@@ -1,9 +1,11 @@
 package assert
 
 import (
-	_ "fmt"
+	"fmt"
 	"reflect"
 	"testing"
+	"runtime"
+	"strings"
 )
 
 // Usage:
@@ -19,9 +21,18 @@ type Assertion struct {
 	t *testing.T
 }
 
+func caller() string {
+	fname, line, caller := "assert.go", 0, 1
+	for ; strings.HasSuffix(fname, "assert.go") && caller<4; caller++ {
+		_, fname, line, _ = runtime.Caller(caller)
+	}
+	fname = fname[strings.LastIndex(fname, "/")+1:]
+	return fmt.Sprintf("\n%v:%v ", fname, line)
+}
+
 func (a *Assertion) True(b bool, message string, messageParams ...interface{}) {
 	if !b {
-		a.t.Fatalf(message, messageParams...)
+		a.t.Fatalf(caller() + message, messageParams...)
 	}
 }
 
