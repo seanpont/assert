@@ -40,14 +40,15 @@ func (a *Assertion) False(b bool, message string, messageParams ...interface{}) 
 	a.True(!b, message, messageParams...)
 }
 
-func (a *Assertion) Nil(val interface{}, message string, messageParams ...interface{}) {
+func (a *Assertion) Nil(val interface{}) {
+	message := fmt.Sprintf("Expected nil but was %v", val)
 	eq := reflect.DeepEqual(val, nil)
-	a.True(eq, message, messageParams...)
+	a.True(eq, message) 
 }
 
-func (a *Assertion) NotNil(val interface{}, message string, messageParams ...interface{}) {
+func (a *Assertion) NotNil(val interface{}) {
 	eq := reflect.DeepEqual(val, nil)
-	a.True(!eq, message, messageParams...)
+	a.True(!eq, "Expected not nil but was nil")
 }
 
 func (a *Assertion) Equal(actual, expected interface{}) {
