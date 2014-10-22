@@ -3,9 +3,9 @@ package assert
 import (
 	"fmt"
 	"reflect"
-	"testing"
 	"runtime"
 	"strings"
+	"testing"
 )
 
 // Usage:
@@ -23,7 +23,7 @@ type Assertion struct {
 
 func caller() string {
 	fname, line, caller := "assert.go", 0, 1
-	for ; strings.HasSuffix(fname, "assert.go") && caller<4; caller++ {
+	for ; strings.HasSuffix(fname, "assert.go") && caller < 4; caller++ {
 		_, fname, line, _ = runtime.Caller(caller)
 	}
 	fname = fname[strings.LastIndex(fname, "/")+1:]
@@ -32,7 +32,7 @@ func caller() string {
 
 func (a *Assertion) True(b bool, message string, messageParams ...interface{}) {
 	if !b {
-		a.t.Fatalf(caller() + message, messageParams...)
+		a.t.Fatalf(caller()+message, messageParams...)
 	}
 }
 
@@ -41,14 +41,13 @@ func (a *Assertion) False(b bool, message string, messageParams ...interface{}) 
 }
 
 func (a *Assertion) Nil(val interface{}) {
-	message := fmt.Sprintf("Expected nil but was %v", val)
-	eq := reflect.DeepEqual(val, nil)
-	a.True(eq, message) 
+	isNil := val == nil || reflect.ValueOf(val).IsNil()
+	a.True(isNil, fmt.Sprintf("Expected nil but was %v", val))
 }
 
 func (a *Assertion) NotNil(val interface{}) {
-	eq := reflect.DeepEqual(val, nil)
-	a.True(!eq, "Expected not nil but was nil")
+	isNil := val == nil || reflect.ValueOf(val).IsNil()
+	a.True(!isNil, "Expected not nil but was nil")
 }
 
 func (a *Assertion) Equal(actual, expected interface{}) {
