@@ -47,12 +47,17 @@ func (a *Assertion) Nil(val interface{}) {
 
 func (a *Assertion) NotNil(val interface{}) {
 	isNil := val == nil || reflect.ValueOf(val).IsNil()
-	a.True(!isNil, "Expected not nil but was nil")
+	a.False(isNil, "Expected not nil but was nil")
 }
 
 func (a *Assertion) Same(actual, expected interface{}) {
 	eq := reflect.ValueOf(actual).Pointer() == reflect.ValueOf(expected).Pointer()
 	a.True(eq, "\nExpected: %v\nReceived: %v", expected, actual)
+}
+
+func (a *Assertion) NotSame(actual, expected interface{}) {
+	eq := reflect.ValueOf(actual).Pointer() == reflect.ValueOf(expected).Pointer()
+	a.False(eq, "\nExpected: %v\nReceived: %v", expected, actual)
 }
 
 func (a *Assertion) Equal(actual, expected interface{}) {
@@ -62,5 +67,5 @@ func (a *Assertion) Equal(actual, expected interface{}) {
 
 func (a *Assertion) NotEqual(actual, expected interface{}) {
 	eq := reflect.DeepEqual(actual, expected)
-	a.True(!eq, "Expected %v to not equal %v, but it did", expected, actual)
+	a.False(eq, "Expected %v to not equal %v, but it did", expected, actual)
 }
