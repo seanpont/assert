@@ -50,6 +50,11 @@ func (a *Assertion) NotNil(val interface{}) {
 	a.True(!isNil, "Expected not nil but was nil")
 }
 
+func (a *Assertion) Same(actual, expected interface{}) {
+	eq := reflect.ValueOf(actual).Pointer() == reflect.ValueOf(expected).Pointer()
+	a.True(eq, "\nExpected: %v\nReceived: %v", expected, actual)
+}
+
 func (a *Assertion) Equal(actual, expected interface{}) {
 	eq := reflect.DeepEqual(actual, expected)
 	a.True(eq, "\nExpected: %v\nReceived: %v", expected, actual)
